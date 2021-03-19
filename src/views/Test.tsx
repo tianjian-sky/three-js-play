@@ -140,7 +140,7 @@ export default class TestComponent extends Vue {
         // this.loadModel('/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf').then(this.addModelToScene)
         this.loadModel('/models/gltf/pub/scene.gltf').then(this.addModelToScene)
         // this.loadModel('/models/gltf/nongkeyuan/part4.gltf').then(this.addModelToScene)
-        this.loadModel('/models/gltf/nongkeyuan/part4.glb').then(this.addModelToScene) // gltf-pipeline 转换为glb 减少体积 https://www.cnblogs.com/baby123/p/13994747.html
+        this.loadModel('/models/gltf/nongkeyuan/part4.draco').then(this.addModelToScene) // gltf-pipeline 转换为glb 减少体积 https://www.cnblogs.com/baby123/p/13994747.html
     }
  
     render () {
