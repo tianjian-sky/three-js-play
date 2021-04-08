@@ -1,0 +1,25 @@
+.wrap {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background-color: azure;
+    .title {
+        flex: 0 0 auto;
+        font-weight: bold;
+        text-align: center;
+    }
+    .modelContainer {
+        position: relative;
+        width: 100%;
+        flex: 1;
+        .model {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+    }
+}

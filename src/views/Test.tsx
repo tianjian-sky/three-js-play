@@ -1,11 +1,12 @@
 import { Vue, Prop, Component, Watch } from 'vue-property-decorator'
-import {Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, SphereGeometry, MeshBasicMaterial, MeshStandardMaterial, Mesh, Group, AmbientLight, HemisphereLight} from 'three'
+import {Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, SphereGeometry, MeshBasicMaterial, MeshStandardMaterial, Mesh, Group, AmbientLight, HemisphereLight, ArrowHelper} from 'three'
 import styles from './Test.module.scss'
 import { GLTF, GLTFLoader } from '../../public/three/examples/jsm/loaders/GLTFLoader.js'
 import { DRACOLoader } from '../../public/three/examples/jsm/loaders/DRACOLoader.js'
 import { OrbitControls } from '../../public/three/examples/jsm/controls/OrbitControls.js'
 import { Heart } from './coms/heart'
 import { Ground } from './coms/ground'
+import Stats from '../../public/three/examples/jsm/libs/stats.module.js'
 
 @Component
 export default class TestComponent extends Vue {
@@ -25,7 +26,7 @@ export default class TestComponent extends Vue {
         const renderer = this.renderer = new WebGLRenderer()
         const control = this.control = new OrbitControls(camera, renderer.domElement)
         const light = new AmbientLight( 0x404040, 10); // soft white light
-        // const hemisphereLight = new HemisphereLight( 0xffffbb, 0x080820, 1 );
+        const hemisphereLight = new HemisphereLight( 0xffffbb, 0x080820, 10 );
         scene.add( light )
         // scene.add(hemisphereLight)
         camera.position.set( - 1.8, 0.6, 1121)
@@ -64,6 +65,14 @@ export default class TestComponent extends Vue {
         const ground = new Ground()
         scene.add(ground.getGround())
 
+        const axesHelper = new ArrowHelper()
+        scene.add(axesHelper)
+
+        const stats = Stats()
+        stats.domElement.style.position = 'absolute';
+        stats.domElement.style.top = '0px';
+        el.appendChild( stats.domElement );
+
         control.addEventListener('start', (e) => {
             console.log('[Orbitcontrol]startEvent', e)
             const root = this.scene
@@ -92,6 +101,7 @@ export default class TestComponent extends Vue {
             cube.rotation.x += 0.01
             cube.rotation.y += 0.01
             renderer.render( scene, camera )
+            stats.update()
         }
         animate();
     }
@@ -140,7 +150,7 @@ export default class TestComponent extends Vue {
         // this.loadModel('/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf').then(this.addModelToScene)
         this.loadModel('/models/gltf/pub/scene.gltf').then(this.addModelToScene)
         // this.loadModel('/models/gltf/nongkeyuan/part4.gltf').then(this.addModelToScene)
-        this.loadModel('/models/gltf/nongkeyuan/part4.draco').then(this.addModelToScene) // gltf-pipeline 转换为glb 减少体积 https://www.cnblogs.com/baby123/p/13994747.html
+        this.loadModel('/models/gltf/nongkeyuan/part4.glb').then(this.addModelToScene) // gltf-pipeline 转换为glb 减少体积 https://www.cnblogs.com/baby123/p/13994747.html
     }
  
     render () {

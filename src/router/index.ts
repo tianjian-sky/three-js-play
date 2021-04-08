@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test'
+import CubeAndCompass from '../views/CubeAndCompass'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes: Array<RouteConfig> = [
     path: '/test',
     name: 'test',
     component: Test
+  },
+  {
+    path: '/cubeAndCompass',
+    name: 'cubeAndCompass',
+    component: CubeAndCompass
   },
 ]
 
