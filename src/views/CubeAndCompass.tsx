@@ -1,5 +1,5 @@
 import { Vue, Prop, Component } from 'vue-property-decorator'
-import {Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, PlaneGeometry, SphereGeometry, MeshBasicMaterial, Mesh, ArrowHelper, Vector2, Vector3, DoubleSide, LineBasicMaterial, Group, TextureLoader, Raycaster, BufferGeometry, Line} from 'three'
+import {Scene, PerspectiveCamera, WebGLRenderer, BoxGeometry, PlaneGeometry, CircleGeometry, SphereGeometry, MeshBasicMaterial, Mesh, ArrowHelper, Vector2, Vector3, DoubleSide, LineBasicMaterial, Group, TextureLoader, Raycaster, BufferGeometry, Line} from 'three'
 import styles from './CubeAndCompass.module.scss'
 import { OrbitControls } from '../../public/three/examples/jsm/controls/OrbitControls.js'
 import Stats from '../../public/three/examples/jsm/libs/stats.module.js'
@@ -34,8 +34,9 @@ export default class CubeComponent extends Vue {
             renderer.setSize(el.clientWidth, el.clientHeight)
         })
         el.appendChild(renderer.domElement)
-        new TextureLoader().load('/compass.png', (texture) => {
-            const compassGeometry = new PlaneGeometry(10, 10, 1)
+        new TextureLoader().load('/images/compass.png', (texture) => {
+            // const compassGeometry = new PlaneGeometry(10, 10, 1)
+            const compassGeometry = new CircleGeometry(5, 32)
             const compassMaterial = new MeshBasicMaterial({side: DoubleSide, map: texture})
             const compass = new Mesh(compassGeometry, compassMaterial)
             compassGeometry.translate.call(compassGeometry, 0, 0, 0)
@@ -155,12 +156,12 @@ export default class CubeComponent extends Vue {
         
         const faceGeometry = new PlaneGeometry(5, 5)
         const faceOffsets: (number|string)[][] = [
-            [-3.5, 0, 0, 0, -Math.PI/2, 0, '左', '/左.png', 'f_CBB'], // 左-前-右-后-顶-底
-            [0, 0, 3.5, 0, 0, 0, '前', '/前.png', 'f_BBA'],
-            [3.5, 0, 0, 0, Math.PI/2, 0, '右', '/右.png', 'f_ABB'],
-            [0, 0, -3.5, 0, -Math.PI, 0, '后', '/后.png', 'f_BBC'],
-            [0, 3.5, 0, -Math.PI/2, 0, 0, '顶', '/顶.png', 'f_BAB'],
-            [0, -3.5, 0, Math.PI/2, 0, 0, '底', '/底.png', 'f_BCB']
+            [-3.5, 0, 0, 0, -Math.PI/2, 0, '左', '/images/左.png', 'f_CBB'], // 左-前-右-后-顶-底
+            [0, 0, 3.5, 0, 0, 0, '前', '/images/前.png', 'f_BBA'],
+            [3.5, 0, 0, 0, Math.PI/2, 0, '右', '/images/右.png', 'f_ABB'],
+            [0, 0, -3.5, 0, -Math.PI, 0, '后', '/images/后.png', 'f_BBC'],
+            [0, 3.5, 0, -Math.PI/2, 0, 0, '顶', '/images/顶.png', 'f_BAB'],
+            [0, -3.5, 0, Math.PI/2, 0, 0, '底', '/images/底.png', 'f_BCB']
         ]
         for (let i = 0; i < faceOffsets.length; i++) {
             const group = new Group()
