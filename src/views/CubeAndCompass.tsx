@@ -9,10 +9,10 @@ export default class CubeComponent extends Vue {
     @Prop({ default: 'Cube & Compass' }) readonly title!: string
     scene?: THREE.Scene
     camera?: THREE.Camera
-    renderer?: THREE.Renderer
+    renderer?: THREE.WebGLRenderer
     sceneBG?: THREE.Scene
     cameraBG?: THREE.Camera
-    rendererBG?: THREE.Renderer
+    rendererBG?: THREE.WebGLRenderer
     control?: OrbitControls
     raycaster?: THREE.Raycaster
     hoveredObjectList: THREE.Mesh[] = []
@@ -334,5 +334,11 @@ export default class CubeComponent extends Vue {
                 </div>
             </div>
         )
+    }
+
+    beforeDestroy () {
+        this.renderer && this.renderer.dispose()
+        this.rendererBG && this.rendererBG.dispose()
+        this.control && this.control.dispose()
     }
 }

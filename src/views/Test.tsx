@@ -13,7 +13,7 @@ export default class TestComponent extends Vue {
     @Prop({ default: 'Hello World' }) readonly title!: string
     scene?: THREE.Scene
     camera?: THREE.Camera
-    renderer?: THREE.Renderer
+    renderer?: THREE.WebGLRenderer
     ambientLight?: THREE.AmbientLight
     control?: OrbitControls
 
@@ -160,5 +160,10 @@ export default class TestComponent extends Vue {
                 <div ref="modelContainer" class={styles.model}></div>
             </div>
         )
+    }
+
+    beforeDestroy () {
+        this.renderer && this.renderer.dispose()
+        this.control && this.control.dispose()
     }
 }
