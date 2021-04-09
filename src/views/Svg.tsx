@@ -105,51 +105,8 @@ export default class TestComponent extends Vue {
         animate();
     }
 
-    loadModel (url: string): Promise<any>  {
-        const p = new Promise((resolve, reject) => {
-            const loader: GLTFLoader = new GLTFLoader()
-            const dracoLoader = new DRACOLoader()
-            dracoLoader.setDecoderPath( '/three/examples/js/libs/draco/gltf/' )
-            dracoLoader.setDecoderConfig({ type: 'js' })
-            dracoLoader.preload()
-            loader.setDRACOLoader( dracoLoader )
-            console.time(`[gltfLoad] ${url}下载:`)
-            loader.load(url, ( gltf: GLTF ) => {
-                console.timeEnd(`[gltfLoad] ${url}解析:`)
-                console.log('[gltf load] complete:', gltf)
-                if (url.includes('nongkeyuan')) {
-                    gltf.scene.rotateX(-.5*Math.PI)
-                }
-                resolve(gltf)
-            }, ( e ) => {
-                console.log('[gltf load] progress:', e)
-            }, ( e ) => {
-                console.log('[gltf load] error:', e)
-                reject(e)
-            }, () => {
-                console.timeEnd(`[gltfLoad] ${url}下载:`)
-                console.time(`[gltfLoad] ${url}解析:`)
-            })
-        })
-        return p
-    }
-
-    addModelToScene (gltf: GLTF): void {
-        const mesh = gltf.scene
-        // mesh.rotation.x = (rotation && rotation.x) || 0
-        // mesh.rotation.y = (rotation && rotation.y) || 0
-        // mesh.rotation.z = (rotation && rotation.z) || 0
-        // mesh.position.set(position.x, position.y, position.z)
-        // scale && mesh.scale.set(scale, scale, scale)
-        this.scene && this.scene.add(mesh)
-    }
-
     mounted () {
         this.initCanvas()
-        // this.loadModel('/models/gltf/DamagedHelmet/glTF/DamagedHelmet.gltf').then(this.addModelToScene)
-        this.loadModel('/models/gltf/pub/scene.gltf').then(this.addModelToScene)
-        // this.loadModel('/models/gltf/nongkeyuan/part4.gltf').then(this.addModelToScene)
-        this.loadModel('/models/gltf/nongkeyuan/part4.glb').then(this.addModelToScene) // gltf-pipeline 转换为glb 减少体积 https://www.cnblogs.com/baby123/p/13994747.html
     }
  
     render () {

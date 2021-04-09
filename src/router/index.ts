@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test'
 import CubeAndCompass from '../views/CubeAndCompass'
+import Svg from '../views/Svg'
 
 Vue.use(VueRouter)
 
@@ -24,6 +25,11 @@ const routes: Array<RouteConfig> = [
     path: '/test',
     name: 'test',
     component: Test
+  },
+  {
+    path: '/svg',
+    name: 'svg',
+    component: Svg
   },
   {
     path: '/cubeAndCompass',

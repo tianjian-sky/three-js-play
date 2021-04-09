@@ -15,49 +15,46 @@ export default class CubeComponent extends Vue {
     rendererBG?: THREE.WebGLRenderer
     control?: OrbitControls
     raycaster?: THREE.Raycaster
-    hoveredObjectList: THREE.Mesh[] = []
+    hoveredObjectList?: THREE.Mesh[] = []
     compassRotation = 0
     cursor = 'default'
     stats = Stats()
 
     initCanvasBg () {
         const el: HTMLDivElement = this.$refs['bgContainer'] as HTMLDivElement
-        const scene = this.sceneBG = new Scene()
-        const camera = this.cameraBG =  new PerspectiveCamera(75, el.clientWidth / el.clientHeight, 0.1, 1000)
-        camera.position.set(0, 0, 7)
-        camera.lookAt(new Vector3())
-        const renderer = this.rendererBG = new WebGLRenderer({antialias: true, alpha:true})
-        renderer.setClearColor(0xEEEEEE, 0.0)
-        renderer.setPixelRatio( window.devicePixelRatio )
-        renderer.setSize( el.clientWidth, el.clientHeight )
-        window.addEventListener('resize', () => {
-            renderer.setSize(el.clientWidth, el.clientHeight)
-        })
-        el.appendChild(renderer.domElement)
+        this.sceneBG = new Scene()
+        this.cameraBG =  new PerspectiveCamera(75, el.clientWidth / el.clientHeight, 0.1, 1000)
+        this.cameraBG.position.set(0, 0, 7)
+        this.cameraBG.lookAt(new Vector3())
+        this.rendererBG = new WebGLRenderer({antialias: true, alpha:true})
+        this.rendererBG.setClearColor(0xEEEEEE, 0.0)
+        this.rendererBG.setPixelRatio( window.devicePixelRatio )
+        this.rendererBG.setSize( el.clientWidth, el.clientHeight )
+        el.appendChild(this.rendererBG.domElement)
         new TextureLoader().load('/images/compass.png', (texture) => {
             // const compassGeometry = new PlaneGeometry(10, 10, 1)
             const compassGeometry = new CircleGeometry(5, 32)
             const compassMaterial = new MeshBasicMaterial({side: DoubleSide, map: texture})
             const compass = new Mesh(compassGeometry, compassMaterial)
             compassGeometry.translate.call(compassGeometry, 0, 0, 0)
-            scene.add(compass)
+            this.sceneBG && this.sceneBG.add(compass)
         })
     }
 
     initCanvas () {
         const el: HTMLDivElement = this.$refs['modelContainer'] as HTMLDivElement
-        const scene = this.scene = new Scene()
-        const camera = this.camera = new PerspectiveCamera( 75, el.clientWidth / el.clientHeight, 0.1, 1000 )
-        camera.position.set(0, 0, 12)
-        camera.lookAt(new Vector3())
-        const renderer = this.renderer = new WebGLRenderer({antialias: true, alpha:true})
-        renderer.setClearColor(0xEEEEEE, 0.0)
-        renderer.setPixelRatio( window.devicePixelRatio )
-        renderer.setSize( el.clientWidth, el.clientHeight )
-        const control = this.control = new OrbitControls(camera, renderer.domElement)
-        control.enableZoom = false
-        control.enablePan = false
-        control.addEventListener('change', (e) => {
+        this.scene = new Scene()
+        this.camera = new PerspectiveCamera( 75, el.clientWidth / el.clientHeight, 0.1, 1000 )
+        this.camera.position.set(0, 0, 12)
+        this.camera.lookAt(new Vector3())
+        this.renderer = new WebGLRenderer({antialias: true, alpha:true})
+        this.renderer.setClearColor(0xEEEEEE, 0.0)
+        this.renderer.setPixelRatio( window.devicePixelRatio )
+        this.renderer.setSize( el.clientWidth, el.clientHeight )
+        this.control = new OrbitControls(this.camera, this.renderer.domElement)
+        this.control.enableZoom = false
+        this.control.enablePan = false
+        this.control.addEventListener('change', (e) => {
             if (this.camera) {
                 const vec = new Vector3()
                 this.camera.getWorldDirection(vec).multiplyScalar(-1)
@@ -71,13 +68,13 @@ export default class CubeComponent extends Vue {
         })
         el.addEventListener('click', this.mouseClickHandler)
         this.raycaster = new Raycaster()
-        el.appendChild( renderer.domElement )
+        el.appendChild(this.renderer.domElement )
         el.addEventListener('mousemove', this.mouseMoveHandler)
 
         const geometry = new SphereGeometry(1, 16, 16)
         const material = new MeshBasicMaterial({color: 0xffff00})
         const cube = new Mesh(geometry, material)
-        scene.add(cube)
+        this.scene.add(cube)
 
         const cornerGeometry = new BoxGeometry( 1, 1, 1 )
         const cornerOffsets: (number|string)[][] = [
@@ -96,7 +93,7 @@ export default class CubeComponent extends Vue {
             _geometry.translate.call(_geometry, cornerOffsets[i][0] as number, cornerOffsets[i][1] as number, cornerOffsets[i][2] as number)
             const mesh = new Mesh(_geometry, cornerMaterial)
             mesh.userData.id = cornerOffsets[i][3]
-            scene.add(mesh)
+            this.scene.add(mesh)
         }
 
         const edgeGeometry = new BoxGeometry( 5, 1, 1 )
@@ -123,7 +120,7 @@ export default class CubeComponent extends Vue {
             _geometry.translate.call(_geometry, edgeOffsets[i][0] as number, edgeOffsets[i][1] as number, edgeOffsets[i][2] as number)
             const mesh = new Mesh(_geometry, edgeMaterial)
             mesh.userData.id = edgeOffsets[i][6]
-            scene.add(mesh)
+            this.scene.add(mesh)
         }
         const lineOffsets: (number|string)[][] = [
             [-3.5, 3.5, 0, 0, -Math.PI/2, 0, 'l_CAX'], // 顶：左前右后
@@ -151,7 +148,7 @@ export default class CubeComponent extends Vue {
             _geometry.translate.call(_geometry, lineOffsets[i][0] as number, lineOffsets[i][1] as number, lineOffsets[i][2] as number)
             const line = new Line(_geometry, lineMaterial)
             line.userData.id = lineOffsets[i][6]
-            scene.add(line)
+            this.scene.add(line)
         }
         
         const faceGeometry = new PlaneGeometry(5, 5)
@@ -170,11 +167,11 @@ export default class CubeComponent extends Vue {
             _geometry.rotateY(faceOffsets[i][4] as number)
             _geometry.rotateZ(faceOffsets[i][5] as number)
             _geometry.translate(faceOffsets[i][0] as number, faceOffsets[i][1] as number, faceOffsets[i][2] as number)
-            const tl = new TextureLoader().load(faceOffsets[i][7] as string, function (texture) {
+            const tl = new TextureLoader().load(faceOffsets[i][7] as string, (texture) => {
                 const faceMaterial = new MeshBasicMaterial({color: 0xffffff, side: DoubleSide, map: texture})
                 const mesh = new Mesh(_geometry, faceMaterial)
                 mesh.userData.id = faceOffsets[i][8]
-                scene.add(mesh)
+                this.scene && this.scene.add(mesh)
             })
             // texture.wrapS = THREE.RepeatWrapping;
             // texture.wrapT = THREE.RepeatWrapping;
@@ -214,7 +211,7 @@ export default class CubeComponent extends Vue {
             // })
         }
         const axesHelper = new ArrowHelper()
-        scene.add(axesHelper)
+        this.scene.add(axesHelper)
     }
 
     initStats () {
@@ -238,7 +235,7 @@ export default class CubeComponent extends Vue {
     mouseMoveHandler (e: MouseEvent) {
         const el = e.target as HTMLElement
         this.cursor = 'default'
-        if (!this.raycaster || !this.scene || !this.camera || !el || el != this.renderer?.domElement) return
+        if (!this.raycaster || !this.scene || !this.camera || !this.hoveredObjectList || !el || el != this.renderer?.domElement) return
         const mouse = new Vector2()
         mouse.x = (e.offsetX / el.clientWidth) * 2 - 1
         mouse.y = -(e.offsetY / el.clientHeight) * 2 + 1
@@ -340,5 +337,14 @@ export default class CubeComponent extends Vue {
         this.renderer && this.renderer.dispose()
         this.rendererBG && this.rendererBG.dispose()
         this.control && this.control.dispose()
+        this.scene = undefined
+        this.camera = undefined
+        this.renderer = undefined
+        this.sceneBG = undefined
+        this.cameraBG = undefined
+        this.rendererBG = undefined
+        this.control = undefined
+        this.raycaster = undefined
+        this.hoveredObjectList = undefined
     }
 }
