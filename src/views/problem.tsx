@@ -1,10 +1,10 @@
 import { Vue, Prop, Component, Watch } from 'vue-property-decorator'
-import { Scene, ArrowHelper, BufferGeometry, BufferAttribute, Line, LineBasicMaterial, PerspectiveCamera, MeshBasicMaterial, MeshPhongMaterial, OrthographicCamera, TextureLoader, WebGLRenderer, BoxGeometry, ShapeGeometry, TextGeometry, FontLoader, SphereGeometry, MeshStandardMaterial, Mesh, Group, AmbientLight, HemisphereLight, Vector3, Color, Matrix4, RawShaderMaterial, GLSL1, InstancedBufferGeometry } from '../../public/three/src/Three'
+import { Scene, ArrowHelper, BufferGeometry, BufferAttribute, Line, LineBasicMaterial, PerspectiveCamera, MeshBasicMaterial, MeshPhongMaterial, OrthographicCamera, TextureLoader, WebGLRenderer, BoxGeometry, ShapeGeometry, TextGeometry, FontLoader, SphereGeometry, MeshStandardMaterial, Mesh, Group, AmbientLight, HemisphereLight, Vector3, Color, Matrix4, RawShaderMaterial, GLSL1, InstancedBufferGeometry, InterleavedBufferAttribute, InstancedInterleavedBuffer, Plane } from '../../public/three/src/Three'
 import styles from './Test.module.scss'
 import { OrbitControls } from '../../public/three/examples/jsm/controls/OrbitControls.js'
 import { Heart } from './coms/heart'
 import { Ground } from './coms/ground'
-import { points, indices, itemSize } from './consts'
+import { points, indices, itemSize, transforms } from './consts'
 
 @Component
 export default class TestComponent extends Vue {
@@ -26,6 +26,7 @@ export default class TestComponent extends Vue {
         // this.camera = new PerspectiveCamera( 75, el.clientWidth / el.clientHeight, 0.1, 1000 )
         this.scene.add(this.camera)
         this.renderer = new WebGLRenderer()
+        this.renderer.localClippingEnabled = true
         this.control = new OrbitControls(this.camera, this.renderer.domElement)
         const light = new AmbientLight(0x404040, 110); // soft white light
         const hemisphereLight = new HemisphereLight(0xffffbb, 0x080820, 110);
@@ -58,45 +59,70 @@ export default class TestComponent extends Vue {
                 precision highp float;
                 precision highp int;
                 attribute vec2 position;
+                
+                /* First row. */
+                varying vec3 instanceTransform0;
+                /* Second row. */
+                varying vec3 instanceTransform1;
+                
+                
                 uniform mat4 modelViewMatrix;
                 uniform mat4 projectionMatrix;
                 
+                #include <clipping_planes_pars_vertex>
+                
                 void main() {
+                    //#include <begin_vertex>
                     vec4 pos = vec4(position, 0.0, 1.0);
+                    vec2 offset = mat2(instanceTransform0[0], instanceTransform1[0], instanceTransform0[1], instanceTransform1[1]) * pos.xy + vec2(instanceTransform0[2], instanceTransform1[2]);
+                    pos = pos + vec4(offset.x, offset.y, 1.0, 0.0);
+
+                    // pos.xy = mat2(instanceTransform0[0], instanceTransform1[0],
+                    //     instanceTransform0[1], instanceTransform1[1]) * pos.xy + 
+                    //     vec2(instanceTransform0[2], instanceTransform1[2]);
+                    
                     gl_Position = projectionMatrix * modelViewMatrix * pos;
+
+                    //#include <project_vertex>
+                    //#include <clipping_planes_vertex>
+
+                    #if NUM_CLIPPING_PLANES > 0 && ! defined( PHYSICAL ) && ! defined( PHONG ) && ! defined( MATCAP )
+                        vClipPosition = - pos.xyz;
+                    #endif
+                    
                 }
             `,
             fragmentShader: `
                 precision highp float;
                 precision highp int;
                 uniform vec3 color;
-                vec3 myColor = vec3(1.0, 0, 0);
                 varying vec4 fragColor;
-                // #include <clipping_planes_pars_fragment>
-                
+                #include <clipping_planes_pars_fragment>
                 void main() {
-                    // #include <clipping_planes_fragment>
-                    gl_FragColor = vec4(myColor, 1.0);
+                    #include <clipping_planes_fragment>
+                    gl_FragColor = vec4(color, 1.0);
                 }
             `,
-            transparent: false, // 暂时设置为false，否则后绘制的线条被覆盖？ TODO:
-            depthTest: true,
-            depthWrite: true,
+            depthTest: false,
+            depthWrite: false,
             glslVersion: GLSL1,
-            clipping: false
+            clipping: true,
+            clippingPlanes: [new Plane(new Vector3(1, 0, 1), 100)]
         })
         const mat2 = new MeshBasicMaterial({color: 0x00ffff})
         const vertices = new BufferAttribute(new Float32Array(points), itemSize, false)
         const indicesAttr = new BufferAttribute(new Uint16Array(indices), 1, false)
         const bg = new InstancedBufferGeometry()
-        const bg2 = new BufferGeometry()
         bg.setAttribute('position', vertices)
         bg.setIndex(indicesAttr)
-        bg2.setAttribute('position', vertices)
-        bg2.setIndex(indicesAttr)
-        bg.instanceCount = 2
-        const ff = new Mesh(bg, mat2)
-        
+        bg.instanceCount = bg._maxInstanceCount = 1
+        const buf = new InstancedInterleavedBuffer(transforms, 6)
+        const transforms0 = new InterleavedBufferAttribute(buf, 3, 0, false)
+        const transforms1 = new InterleavedBufferAttribute(buf, 3, 3, false)
+        bg.setAttribute('instanceTransform0', transforms0)
+        bg.setAttribute('instanceTransform1', transforms1)
+        const ff = new Mesh(bg, rsMat)
+        debugger
         this.scene.add(ff)
         console.log('rr', Math.random())
         const animate = () => {
