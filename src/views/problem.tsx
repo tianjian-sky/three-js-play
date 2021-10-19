@@ -6,6 +6,10 @@ import { Heart } from './coms/heart'
 import { Ground } from './coms/ground'
 import { points, indices, itemSize, transforms } from './consts'
 
+/**
+ * 问题排查测试用例
+ */
+
 @Component
 export default class TestComponent extends Vue {
     @Prop({ default: 'Hello World problem' }) readonly title!: string
@@ -56,41 +60,37 @@ export default class TestComponent extends Vue {
                 }
             },
             vertexShader: `
-                precision highp float;
-                precision highp int;
-                attribute vec2 position;
-                
-                /* First row. */
-                varying vec3 instanceTransform0;
-                /* Second row. */
-                varying vec3 instanceTransform1;
-                
-                
-                uniform mat4 modelViewMatrix;
-                uniform mat4 projectionMatrix;
-                
-                #include <clipping_planes_pars_vertex>
-                
-                void main() {
-                    //#include <begin_vertex>
-                    vec4 pos = vec4(position, 0.0, 1.0);
-                    vec2 offset = mat2(instanceTransform0[0], instanceTransform1[0], instanceTransform0[1], instanceTransform1[1]) * pos.xy + vec2(instanceTransform0[2], instanceTransform1[2]);
-                    pos = pos + vec4(offset.x, offset.y, 1.0, 0.0);
+            precision highp float;
+            precision highp int;
+            attribute vec2 position;
+            
+            /* First row. */
+            attribute vec3 instanceTransform0; // varying只能在着色器内部使用
+            /* Second row. */
+            attribute vec3 instanceTransform1;
+            
+            
+            uniform mat4 modelViewMatrix;
+            uniform mat4 projectionMatrix;
+            
+            #include <clipping_planes_pars_vertex>
+            
+            void main() {
+                //#include <begin_vertex>
+                vec4 pos = vec4(position, 0.0, 1.0);
+                  
+                pos.xy = mat2(instanceTransform0[0], instanceTransform1[0],
+                            instanceTransform0[1], instanceTransform1[1]) * pos.xy + vec2(instanceTransform0[2], instanceTransform1[2]);
+            
 
-                    // pos.xy = mat2(instanceTransform0[0], instanceTransform1[0],
-                    //     instanceTransform0[1], instanceTransform1[1]) * pos.xy + 
-                    //     vec2(instanceTransform0[2], instanceTransform1[2]);
-                    
-                    gl_Position = projectionMatrix * modelViewMatrix * pos;
-
-                    //#include <project_vertex>
-                    //#include <clipping_planes_vertex>
-
-                    #if NUM_CLIPPING_PLANES > 0 && ! defined( PHYSICAL ) && ! defined( PHONG ) && ! defined( MATCAP )
-                        vClipPosition = - pos.xyz;
-                    #endif
-                    
-                }
+                gl_Position = projectionMatrix * modelViewMatrix * pos;
+                
+                //#include <project_vertex>
+                //#include <clipping_planes_vertex>
+                #if NUM_CLIPPING_PLANES > 0 && ! defined( PHYSICAL ) && ! defined( PHONG ) && ! defined( MATCAP )
+                    vClipPosition = - pos.xyz;
+                #endif
+            }
             `,
             fragmentShader: `
                 precision highp float;
@@ -115,16 +115,14 @@ export default class TestComponent extends Vue {
         const bg = new InstancedBufferGeometry()
         bg.setAttribute('position', vertices)
         bg.setIndex(indicesAttr)
-        bg.instanceCount = bg._maxInstanceCount = 1
         const buf = new InstancedInterleavedBuffer(transforms, 6)
         const transforms0 = new InterleavedBufferAttribute(buf, 3, 0, false)
         const transforms1 = new InterleavedBufferAttribute(buf, 3, 3, false)
         bg.setAttribute('instanceTransform0', transforms0)
         bg.setAttribute('instanceTransform1', transforms1)
+        bg.instanceCount = bg._maxInstanceCount = transforms0.data.count
         const ff = new Mesh(bg, rsMat)
-        debugger
         this.scene.add(ff)
-        console.log('rr', Math.random())
         const animate = () => {
             requestAnimationFrame(animate)
             if (this.renderer && this.scene && this.camera) {

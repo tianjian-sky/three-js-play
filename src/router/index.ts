@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test'
+import Camera from '../views/camera'
+import Problem from '../views/problem'
 import CubeAndCompass from '../views/CubeAndCompass'
 import Svg from '../views/Svg'
 
@@ -25,6 +27,16 @@ const routes: Array<RouteConfig> = [
     path: '/test',
     name: 'test',
     component: Test
+  },
+  {
+    path: '/camera',
+    name: 'camera',
+    component: Camera
+  },
+  {
+    path: '/problem',
+    name: 'problem',
+    component: Problem
   },
   {
     path: '/svg',
