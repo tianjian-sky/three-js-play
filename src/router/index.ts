@@ -5,6 +5,7 @@ import Test from '../views/Test'
 import Camera from '../views/camera'
 import Problem from '../views/problem'
 import CubeAndCompass from '../views/CubeAndCompass'
+import Matrix from '../views/matrix'
 import Svg from '../views/Svg'
 
 Vue.use(VueRouter)
@@ -47,6 +48,11 @@ const routes: Array<RouteConfig> = [
     path: '/cubeAndCompass',
     name: 'cubeAndCompass',
     component: CubeAndCompass
+  },
+  {
+    path: '/matrix',
+    name: 'matrix',
+    component: Matrix
   },
 ]
 
