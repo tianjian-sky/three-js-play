@@ -3,9 +3,11 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test'
 import Camera from '../views/camera'
+import OrthCamera from '../views/orthCamera'
 import Problem from '../views/problem'
 import CubeAndCompass from '../views/CubeAndCompass'
 import Matrix from '../views/matrix'
+import Matrix2 from '../views/matrix2'
 import Svg from '../views/Svg'
 
 Vue.use(VueRouter)
@@ -54,6 +56,16 @@ const routes: Array<RouteConfig> = [
     name: 'matrix',
     component: Matrix
   },
+  {
+    path: '/matrix2',
+    name: 'matrix2',
+    component: Matrix2
+  },
+  {
+    path: '/orthCamera',
+    name: 'orthCamera',
+    component: OrthCamera
+  }
 ]
 
 const router = new VueRouter({

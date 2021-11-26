@@ -6,7 +6,7 @@ import { OrbitControls } from '../../public/three/examples/jsm/controls/OrbitCon
 /**
  * 问题排查测试用例
  */
-
+let cube
 @Component
 export default class TestComponent extends Vue {
     @Prop({ default: 'Hello World problem' }) readonly title!: string
@@ -22,8 +22,11 @@ export default class TestComponent extends Vue {
     initCanvas() {
         const el: HTMLDivElement = this.$refs['modelContainer'] as HTMLDivElement
         this.scene = new Scene()
-        this.camera = new OrthographicCamera(-50, 50, 50, -50, 1, 1000)
-        this.camera.position.set(0, 0, 1)
+        const camWidth = 100
+        let camHeight = 100
+        camHeight = camWidth / (el.clientWidth / el.clientHeight)
+        this.camera = new OrthographicCamera(- camWidth / 2, camWidth / 2, camHeight/ 2, - camHeight / 2, 1, 1000)
+        this.camera.position.set(0, 0, 10)
         this.camera.lookAt(new Vector3(0, 0, 0))
         // this.camera = new PerspectiveCamera( 75, el.clientWidth / el.clientHeight, 0.1, 1000 )
         this.scene.add(this.camera)
@@ -41,67 +44,10 @@ export default class TestComponent extends Vue {
         el.appendChild(this.renderer.domElement)
         this.camera.position.z = 100
 
-        const geometry1 = new CircleGeometry( 1, 32 )
-        const material1 = new MeshBasicMaterial( { color: 0xff0000 } );
-        const circle1 = new Mesh( geometry1, material1 )
-        this?.scene.add( circle1 )
-
-        const geometry = new BoxGeometry( 10, 10, 1 )
+        const geometry = new BoxGeometry( 30, 10, 1 )
         const material = new MeshBasicMaterial( {color: 0x00ff00} )
-        const cube = new Mesh( geometry, material )
-        cube.translateX(10)
-        cube.translateY(10)
+        cube = new Mesh( geometry, material )
         this?.scene.add( cube )
-
-        const geometry2 = new BoxGeometry( 10, 10, 1 )
-        const material2 = new MeshBasicMaterial( {color: 0x00ffff} )
-        const cube2 = new Mesh( geometry2, material2 )
-        cube2.translateX(10)
-        cube2.translateY(10)
-        const transform = new Matrix4()
-        transform.makeScale(.5, .5, 1)
-        cube2.applyMatrix4(transform)
-        this?.scene.add( cube2 )
-
-        // const geometry3 = new BoxGeometry( 10, 10, 1 )
-        // const material3 = new MeshBasicMaterial( {color: 0xffff00} )
-        // const cube3 = new Mesh( geometry3, material3 )
-        // // cube3.translateX(10)
-        // // cube3.translateY(10)
-        // const transform3 = new Matrix4()
-        // transform3.makeScale(.1, .1, 1).setPosition(10, 10, 0)
-        // // transform3.makeTranslation(5, 5, 0)
-        // console.log('mat', transform3)
-        // cube3.matrix.multiplyMatrices(cube3.matrix, transform3)
-        // cube3.matrixAutoUpdate = false
-        // this?.scene.add( cube3 )
-    
-        // const geometryp2 = new CircleGeometry( 1, 32 )
-        // const materialp2 = new MeshBasicMaterial( { color: 0xff0000 } );
-        // const circle2 = new Mesh( geometryp2, materialp2 )
-        // circle2.translateX(10)
-        // circle2.translateY(10)
-        // this?.scene.add( circle2 )
-
-        const group = new Group()
-        group.name="transform"
-        for (let i = 0; i < 5; i++){
-            const v = (i > 1 ? 1 : -1) * 10 * [2,1,0,1,2][i]
-            for (let j = 0; j < 5; j++) {
-                const h = (j > 1 ? 1 : -1) * 10 * [2,1,0,1,2][j]
-                const g = new BoxGeometry( 5, 5, 1 )
-                const m = new MeshBasicMaterial( {color: 0xff00f0} )
-                const cube = new Mesh( g, m )
-                cube.translateX(h)
-                cube.translateY(v)
-                group.add(cube)
-            }
-        }
-        this?.scene.add(group)
-        // const transform3 = new Matrix4()
-        // transform3.makeScale(0.5, 0.5, 1).setPosition(0.5*-5, 0, 0)
-        // group.matrix.multiplyMatrices(group.matrix, transform3)
-        // group.matrixAutoUpdate = false
 
         const animate = () => {
             requestAnimationFrame(animate)
@@ -110,6 +56,45 @@ export default class TestComponent extends Vue {
             }
         }
         animate();
+    }
+
+    transform1 () {
+        this.resetTransform()
+        // 先旋转
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeRotationZ(30 * Math.PI / 180) 
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 3000)
+
+        // 再平移   
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeTranslation(10, 0, 0)
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 6000)
+    }
+
+    transform2 () {
+        this.resetTransform()
+        // 再平移   
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeTranslation(10, 0, 0)
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 3000)
+
+        // 先旋转
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeRotationZ(30 * Math.PI / 180) 
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 6000)
+    }
+
+    resetTransform () {
+        cube.matrix = new Matrix4()
+        cube.matrixAutoUpdate = false
     }
 
     changeRotationCenter (e: InputEvent, type: string) {
@@ -170,7 +155,9 @@ export default class TestComponent extends Vue {
                     scale:
                     <input id="scale-i" value={this.scale} onInput={e => this.changeScale(e)}></input>
                     <br/>
-                    <button onClick={this.transform}>start!</button>
+                    <button onClick={this.transform1}>旋转矩阵 x 平移矩阵</button>
+                    <button onClick={this.transform2}>平移矩阵 x 旋转矩阵</button>
+                    <button onClick={this.resetTransform}>重置</button>
                 </div>
                 <div ref="modelContainer" class={styles.model}>运用变换</div>
             </div>
