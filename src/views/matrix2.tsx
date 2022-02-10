@@ -63,14 +63,14 @@ export default class TestComponent extends Vue {
         // 先旋转
         setTimeout(() => {
             const transform1 = new Matrix4().makeRotationZ(30 * Math.PI / 180) 
-            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrix = cube.matrix.premultiply(transform1)
             cube.matrixAutoUpdate = false
         }, 3000)
 
         // 再平移   
         setTimeout(() => {
-            const transform1 = new Matrix4().makeTranslation(10, 0, 0)
-            cube.matrix = cube.matrix.multiply(transform1)
+            const transform1 = new Matrix4().makeTranslation(30, 0, 0)
+            cube.matrix = cube.matrix.premultiply(transform1)
             cube.matrixAutoUpdate = false
         }, 6000)
     }
@@ -79,7 +79,41 @@ export default class TestComponent extends Vue {
         this.resetTransform()
         // 再平移   
         setTimeout(() => {
-            const transform1 = new Matrix4().makeTranslation(10, 0, 0)
+            const transform1 = new Matrix4().makeTranslation(30, 0, 0)
+            cube.matrix = cube.matrix.premultiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 3000)
+
+        // 先旋转
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeRotationZ(30 * Math.PI / 180) 
+            cube.matrix = cube.matrix.premultiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 6000)
+    }
+
+    transform3 () {
+        this.resetTransform()
+        // 先旋转
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeRotationZ(30 * Math.PI / 180) 
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 3000)
+
+        // 再平移   
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeTranslation(30, 0, 0)
+            cube.matrix = cube.matrix.multiply(transform1)
+            cube.matrixAutoUpdate = false
+        }, 6000)
+    }
+
+    transform4 () {
+        this.resetTransform()
+        // 再平移   
+        setTimeout(() => {
+            const transform1 = new Matrix4().makeTranslation(30, 0, 0)
             cube.matrix = cube.matrix.multiply(transform1)
             cube.matrixAutoUpdate = false
         }, 3000)
@@ -155,8 +189,10 @@ export default class TestComponent extends Vue {
                     scale:
                     <input id="scale-i" value={this.scale} onInput={e => this.changeScale(e)}></input>
                     <br/>
-                    <button onClick={this.transform1}>旋转矩阵 x 平移矩阵</button>
-                    <button onClick={this.transform2}>平移矩阵 x 旋转矩阵</button>
+                    <button onClick={this.transform1}>平移矩阵 x 旋转矩阵 x P</button>
+                    <button onClick={this.transform2}>旋转矩阵 x 平移矩阵 x P</button>
+                    <button onClick={this.transform3}>P x 旋转矩阵 x 平移矩阵</button>
+                    <button onClick={this.transform4}>P x 平移矩阵 x 旋转矩阵</button>
                     <button onClick={this.resetTransform}>重置</button>
                 </div>
                 <div ref="modelContainer" class={styles.model}>运用变换</div>
