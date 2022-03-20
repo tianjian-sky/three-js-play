@@ -9,6 +9,8 @@ import CubeAndCompass from '../views/CubeAndCompass'
 import Matrix from '../views/matrix'
 import Matrix2 from '../views/matrix2'
 import Svg from '../views/Svg'
+import Quarternion from '../views/quaternion'
+import RenderTarget from '../views/RenderTarget'
 
 Vue.use(VueRouter)
 
@@ -62,9 +64,19 @@ const routes: Array<RouteConfig> = [
     component: Matrix2
   },
   {
+    path: '/renderTarget',
+    name: 'renderTarget',
+    component: RenderTarget
+  },
+  {
     path: '/orthCamera',
     name: 'orthCamera',
     component: OrthCamera
+  },
+  {
+      path: '/quarternion',
+      name: 'quarternion',
+      component: Quarternion
   }
 ]
 

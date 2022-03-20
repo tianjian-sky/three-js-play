@@ -154,14 +154,6 @@ export default class OrthCamera extends Vue {
                     offset += w * 4
                 }
                 drawCanvas.getContext('2d').putImageData(new ImageData(pixelBuffer2, w, h), 0, 0)
-                // let image = new Image()
-                // image.style = 'position:absolute;left: 100px;top: 100px;z-index: 100000;border:1px solid blue;'
-                // let src = drawCanvas.toDataURL("image/png")
-                // image.src = src
-                // document.body.appendChild(image)
-                // drawCanvas.toBlob(function(blob) {
-                //     resolve(blob)
-                // })
                 this.snapshotList.push(drawCanvas.toDataURL())
             }
             

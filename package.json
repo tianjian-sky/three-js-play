@@ -10,6 +10,7 @@
   "dependencies": {
     "@types/three": "^0.126.0",
     "core-js": "^3.6.5",
+    "element-ui": "^2.15.6",
     "three": "^0.126.1",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
