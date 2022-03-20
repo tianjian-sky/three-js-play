@@ -1,0 +1,16 @@
+.wrap {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: navy;
+    .container {
+        position: relative;
+        flex: 1;
+    }
+    .window {
+        position: absolute;
+        border: 1px dashed orange,
+    }
+}
