@@ -302,9 +302,6 @@ export default class TestComponent extends Vue {
         animate();
     }
 
-    mouseDownHandler (e: MouseEvent) {
-    }
-
     initControls () {
         // if (this.camera && this.renderer) {
         //     this.control = new OrbitControls(this.camera, this.renderer.domElement)
@@ -401,7 +398,7 @@ export default class TestComponent extends Vue {
         return (
             <div class={styles.wrap}>
                 <p class={styles.title}>{this.title}</p>
-                <div class={styles.model} onMouseDown={this.mouseDownHandler}>
+                <div class={styles.model}>
                     <div ref="modelContainer" class={styles.webglRenderer}></div>
                     {/* <div ref="cssRendererContainer"  class={styles.cssRenderer}></div> */}
                 </div>

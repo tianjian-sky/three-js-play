@@ -110,11 +110,10 @@ export default class OrthCamera extends Vue {
         const drawCanvas: HTMLCanvasElement = document.createElement('canvas')
         const p = new Promise((resolve, reject) => {
 
-            let dx = this.windowParams.l
-            let dy = this.windowParams.t
-            let w = this.windowParams.w
-            let h = this.windowParams.h
-
+            let dx = this.windowParams.l * 1
+            let dy = this.windowParams.t * 1
+            let w = this.windowParams.w * 1
+            let h = this.windowParams.h * 1
             // 拿到的buffer图像y轴是反的
             const dy2 = dy + h
             dx *= dpr
@@ -204,8 +203,7 @@ export default class OrthCamera extends Vue {
     render() {
         const imgs = []
         for (let i = 0; i < this.snapshotList.length; i++) {
-            imgs.push(<el-image style="float:left;width:200px;margin:10px;border:1px solid blue;" src={this.snapshotList[i]} preview-src-list={this.snapshotList}></el-image>)
-
+            imgs.push(<el-image style="position:absolute;left:0;top: 0;float:left;width:200px;margin:10px;border:1px solid blue;" src={this.snapshotList[i]} preview-src-list={this.snapshotList}></el-image>)
         }
         return (
             <div class={styles.wrap}>
