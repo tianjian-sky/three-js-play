@@ -14,8 +14,8 @@ export default class SphericalDemo extends Vue {
     camPos = {x: 20, y: 20, z: 20}
     params = {
         radius: 10,
-        phi: 0,
-        theta: 0
+        phi: 45,
+        theta: 45
     }
     camParams = {l:-500, r: 500, t: 500, b: -500, n: 0, f: 2000}
     spherical = null
@@ -76,7 +76,24 @@ export default class SphericalDemo extends Vue {
         }
         animate();
     }
-
+    resetByMatrix () {
+        const mat = new Matrix4()
+        mat.premultiply(new Matrix4().makeRotationY(-this.params.theta * Math.PI / 180))
+        mat.premultiply(new Matrix4().makeRotationX(-this.params.phi * Math.PI / 180))
+        const lineGeometry = new BufferGeometry()
+        let lineObj = this.scene.getObjectByName('xxxxx')
+        if (lineObj) lineObj.parent.remove(lineObj)
+        lineGeometry.setFromPoints([
+            new Vector3(0, 0, 0),
+            new Vector3().setFromSpherical(this.spherical).applyMatrix4(mat),
+        ])
+        const material = new LineBasicMaterial({
+            color: 0x666fff,
+            linewidth: 1
+        })
+        lineObj = new Line(lineGeometry, material)
+        this.scene.add(lineObj)
+    }
 
     mounted() {
         this.initCanvas()
@@ -92,7 +109,8 @@ export default class SphericalDemo extends Vue {
                     <button onClick={() => {
                         this.params.theta = 0
                         this.params.phi = 0
-                    }}>reset</button>
+                    }}>reset</button><br/>
+                    <button onClick={() => this.resetByMatrix()}>resetByMatrix</button><br/>
                 </p>
                 <div ref="modelContainer" class={styles.model}></div>
             </div>
