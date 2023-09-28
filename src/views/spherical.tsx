@@ -49,7 +49,7 @@ export default class SphericalDemo extends Vue {
         const a2 = new ArrowHelper( new Vector3(0, 1, 0), new Vector3(), 10, 0x00ff00 )
         const a3 = new ArrowHelper( new Vector3(0, 0, 1), new Vector3(), 10, 0x0000ff )
         this.scene.add(a1, a2, a3)
-        this.spherical = new Spherical(this.params.radius, this.params.phi, this.params.theta)
+        this.spherical = new Spherical(this.params.radius, this.params.phi * Math.PI / 180, this.params.theta * Math.PI / 180)
         const lineGeometry = new BufferGeometry()
         const material = new LineBasicMaterial({
             color: 0xffff00,
@@ -63,7 +63,7 @@ export default class SphericalDemo extends Vue {
         this.scene.add(this.lineObj)
         const animate = () => {
             requestAnimationFrame(animate)
-            this.spherical.set(this.params.radius, this.params.phi, this.params.theta)
+            this.spherical.set(this.params.radius, this.params.phi * Math.PI / 180, this.params.theta * Math.PI / 180)
             const lineGeometry = new BufferGeometry()
             lineGeometry.setFromPoints([
                 new Vector3(0, 0, 0),
@@ -85,10 +85,14 @@ export default class SphericalDemo extends Vue {
     render() {
         return (
             <div class={styles.wrap}>
-                <p>球坐标参数 {this.params}
+                <p>球坐标参数 {JSON.stringify(this.params)}
                     r:<input type="number" value={this.params.radius} onInput={v => this.params.radius = Number((v.target as HTMLInputElement).value)}></input><br/>
                     phi: <input type="number" value={this.params.phi} onInput={v => this.params.phi = Number((v.target as HTMLInputElement).value)}></input><br/>
                     theta: <input type="number" value={this.params.theta} onInput={v => this.params.theta = Number((v.target as HTMLInputElement).value)}></input><br/>
+                    <button onClick={() => {
+                        this.params.theta = 0
+                        this.params.phi = 0
+                    }}>reset</button>
                 </p>
                 <div ref="modelContainer" class={styles.model}></div>
             </div>
