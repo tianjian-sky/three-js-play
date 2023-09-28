@@ -205,7 +205,7 @@ export default class TestComponent extends Vue {
             circleNode.setAttribute('r', '5')
             circleNode.setAttribute('fill', '#fff')
             circleNode.setAttribute('stroke-width', '0')
-            const circleObject = new SVGObject(circleNode) as THREE.Object3D;
+            const circleObject = new SVGObject(circleNode) as unknown as THREE.Object3D
             circleObject.position.x = coor[0]
             circleObject.position.y = 0
             circleObject.position.z = coor[2]
@@ -221,7 +221,7 @@ export default class TestComponent extends Vue {
             textNode.textContent = this.stations[i].name
             groupNode.appendChild(textNode)
 
-            const object = new SVGObject(groupNode) as THREE.Object3D;
+            const object = new SVGObject(groupNode) as unknown as THREE.Object3D;
             object.position.x = coor[0]
             object.position.y = 0
             object.position.z = coor[2]
@@ -336,7 +336,7 @@ export default class TestComponent extends Vue {
         }
         const vbx = svg.getAttributeNS(null, 'viewBox')
         if (!vbx) return
-        const vbxArr: string[] = vbx && vbx.split(' ')
+        const vbxArr: number[] = vbx && vbx.split(' ').map((item: string) => Number(item))
         vbxArr[0] = vbxArr[0] * 1 - offX * this.zoomFactor.x / svg.clientWidth
         vbxArr[1] = vbxArr[1] * 1 - offY * this.zoomFactor.y / svg.clientHeight
         svg.setAttributeNS(null, 'viewBox', vbxArr.join(' '))

@@ -66,7 +66,7 @@ export default class TestComponent extends Vue {
 
         const axesHelper = new ArrowHelper()
         this.scene.add(axesHelper)
-
+        // @ts-ignore
         const stats = Stats()
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.top = '0px';

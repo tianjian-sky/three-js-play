@@ -8,7 +8,7 @@ import { Heart } from './coms/heart'
 export default class OrthCamera extends Vue {
     @Prop({ default: 'Hello World' }) readonly title!: string
     scene?: THREE.Scene
-    camera?: THREE.Camera
+    camera?: any
     renderer?: THREE.WebGLRenderer
     ambientLight?: THREE.AmbientLight
     control?: OrbitControls
@@ -74,7 +74,7 @@ export default class OrthCamera extends Vue {
 
 
     changeCamParam (type: string, e: InputEvent) {
-        this.camParams[type] = e.target.value
+        this.camParams[type] = (e.target as HTMLInputElement).value
         this.updateCam()
     }
     moveFruscrum (type: string) {
@@ -120,10 +120,10 @@ export default class OrthCamera extends Vue {
                 </p>
                 <p>
                     camParameter: {JSON.stringify(this.camParams)}<br/>
-                    left:<input id="c-l" value={this.camParams.r} onInput={e => this.changeCamParam('left', e)}></input>
-                    right:<input id="c-r" value={this.camParams.l} onInput={e => this.changeCamParam('right', e)}></input>
-                    top:<input id="c-t" value={this.camParams.t} onInput={e => this.changeCamParam('top', e)}></input>
-                    bottom:<input id="c-b" value={this.camParams.b} onInput={e => this.changeCamParam('bottom', e)}></input><br/>
+                    left:<input id="c-l" value={this.camParams.r} onInput={e => this.changeCamParam('left', e as InputEvent)}></input>
+                    right:<input id="c-r" value={this.camParams.l} onInput={e => this.changeCamParam('right', e as InputEvent)}></input>
+                    top:<input id="c-t" value={this.camParams.t} onInput={e => this.changeCamParam('top', e as InputEvent)}></input>
+                    bottom:<input id="c-b" value={this.camParams.b} onInput={e => this.changeCamParam('bottom', e as InputEvent)}></input><br/>
                     <button onClick={e => this.moveFruscrum('up')}>上移</button>
                     <button onClick={e => this.moveFruscrum('down')}>下移</button>
                     <button onClick={e => this.moveFruscrum('left')}>左移</button>

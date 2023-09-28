@@ -3,6 +3,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Test from '../views/Test'
 import Camera from '../views/camera'
+import CameraRotate from '../views/cameraRotate'
 import OrthCamera from '../views/orthCamera'
 import Problem from '../views/problem'
 import CubeAndCompass from '../views/CubeAndCompass'
@@ -11,6 +12,7 @@ import Matrix2 from '../views/matrix2'
 import Svg from '../views/Svg'
 import Quarternion from '../views/quaternion'
 import RenderTarget from '../views/RenderTarget'
+import SphericalDemo from '../views/spherical'
 
 Vue.use(VueRouter)
 
@@ -37,6 +39,11 @@ const routes: Array<RouteConfig> = [
     path: '/camera',
     name: 'camera',
     component: Camera
+  },
+  {
+    path: '/cameraRotate',
+    name: 'cameraRotate',
+    component: CameraRotate
   },
   {
     path: '/problem',
@@ -77,12 +84,16 @@ const routes: Array<RouteConfig> = [
       path: '/quarternion',
       name: 'quarternion',
       component: Quarternion
+  },
+  {
+    path: '/sphericalDemo',
+    name: 'SphericalDemo',
+    component: SphericalDemo
   }
 ]
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes
 })
 

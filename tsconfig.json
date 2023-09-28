@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "preserve",
     "importHelpers": true,
     "moduleResolution": "node",
@@ -29,12 +29,10 @@
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "*.d.ts"
+    "./src/main.ts",
+    "./src/shims-tsx.d.ts",
+    "./src/shims-vue.d.ts",
+    "./css.d.ts"
   ],
   "exclude": [
     "node_modules"

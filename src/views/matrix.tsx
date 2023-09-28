@@ -113,12 +113,12 @@ export default class TestComponent extends Vue {
     }
 
     changeRotationCenter (e: InputEvent, type: string) {
-        this.rotateCenter[type] = e.target.value
+        this.rotateCenter[type] = (e.target as HTMLInputElement).value
     }
 
     
     changeScale (e: InputEvent) {
-        this.scale = e.target.value
+        this.scale = Number((e.target as HTMLInputElement).value)
     }
     
 
@@ -163,12 +163,12 @@ export default class TestComponent extends Vue {
                 <p class={styles.title}>{this.title}</p>
                 <div>
                     rotate center:
-                    <input id="rc-x" value={this.rotateCenter.x} onInput={e => this.changeRotationCenter(e, 'x')}></input>
-                    <input id="rc-y" value={this.rotateCenter.y} onInput={e => this.changeRotationCenter(e, 'y')}></input>
-                    <input id="rc-z" value={this.rotateCenter.z} onInput={e => this.changeRotationCenter(e, 'z')}></input>
+                    <input id="rc-x" value={this.rotateCenter.x} onInput={e => this.changeRotationCenter(e as InputEvent, 'x')}></input>
+                    <input id="rc-y" value={this.rotateCenter.y} onInput={e => this.changeRotationCenter(e as InputEvent, 'y')}></input>
+                    <input id="rc-z" value={this.rotateCenter.z} onInput={e => this.changeRotationCenter(e as InputEvent, 'z')}></input>
                     <br/>
                     scale:
-                    <input id="scale-i" value={this.scale} onInput={e => this.changeScale(e)}></input>
+                    <input id="scale-i" value={this.scale} onInput={e => this.changeScale(e as InputEvent)}></input>
                     <br/>
                     <button onClick={this.transform}>start!</button>
                 </div>
