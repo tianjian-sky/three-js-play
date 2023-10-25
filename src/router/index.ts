@@ -13,6 +13,7 @@ import Svg from '../views/Svg'
 import Quarternion from '../views/quaternion'
 import RenderTarget from '../views/RenderTarget'
 import SphericalDemo from '../views/spherical'
+import CameraLookAt from '../views/cameraLookAt'
 
 Vue.use(VueRouter)
 
@@ -89,6 +90,11 @@ const routes: Array<RouteConfig> = [
     path: '/sphericalDemo',
     name: 'SphericalDemo',
     component: SphericalDemo
+  },
+  {
+    path: '/cameraLookAt',
+    name: 'cameraLookAt',
+    component: CameraLookAt
   }
 ]
 
