@@ -14,6 +14,7 @@ import Quarternion from '../views/quaternion'
 import RenderTarget from '../views/RenderTarget'
 import SphericalDemo from '../views/spherical'
 import CameraLookAt from '../views/cameraLookAt'
+import OrbitControl from '../views/orbitControl'
 
 Vue.use(VueRouter)
 
@@ -95,6 +96,11 @@ const routes: Array<RouteConfig> = [
     path: '/cameraLookAt',
     name: 'cameraLookAt',
     component: CameraLookAt
+  },
+  {
+    path: '/orbitControl',
+    name: 'orbitControl',
+    component: OrbitControl
   }
 ]
 
