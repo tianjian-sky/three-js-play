@@ -298,15 +298,12 @@ class RoamingControls extends EventDispatcher {
             this.camera.position.y += this.move.displacement.y
             this.target.setY(this.target.y + this.move.displacement.y)
             if (this.rotate.delta.length() != 0) {
-                const A = this.target.clone()
-                const dist = A.clone().sub(this.camera.position).length()
-                const pa = new Vector3(0, 0, -dist)
-                const bT = new THREE.Matrix4().lookAt(this.camera.position, this.target, this.camera.up).premultiply(new THREE.Matrix4().makeTranslation(this.camera.position))
-                const m2 = new THREE.Matrix4().makeRotationX(-this.rotate.delta.y * Math.PI * 2 / this.domElement.offsetHeight)
-                const m3 = new THREE.Matrix4().makeRotationY(-this.rotate.delta.x * Math.PI * 2 / this.domElement.offsetWidth)
-                const a = pa.clone().applyMatrix4(m2.premultiply(m3))
-                const p = a.applyMatrix4(bT)
-                this.target = p
+                const m1 = new THREE.Matrix4().makeRotationX(-this.rotate.delta.y * Math.PI * 2 / this.domElement.offsetHeight)
+                const m2 = new THREE.Matrix4().makeRotationY(-this.rotate.delta.x * Math.PI * 2 / this.domElement.offsetWidth)
+                const b = new Vector3(0, 0, -this.target.clone().sub(this.camera.position).length())
+                const T = new THREE.Matrix4().lookAt(this.camera.position, this.target, this.camera.up).premultiply(new THREE.Matrix4().makeTranslation(this.camera.position))
+                const pb = b.clone().applyMatrix4(m1.premultiply(m2))
+                this.target = pb.applyMatrix4(T)
                 this.rotate.delta.set(0, 0, 0)
             }
             this.camera.lookAt(this.target)
